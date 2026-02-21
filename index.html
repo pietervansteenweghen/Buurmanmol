@@ -10,9 +10,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --red: #e01010;
-      --red-dark: #9a0a0a;
-      --red-glow: rgba(224, 16, 16, 0.6);
+      --red: #8b10e0;
+      --red-dark: #5a0a9a;
+      --red-glow: rgba(139, 16, 224, 0.6);
     }
 
     html, body {
@@ -57,13 +57,13 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      background: radial-gradient(circle at 38% 35%, #ff4444 0%, var(--red) 45%, var(--red-dark) 100%);
+      background: radial-gradient(circle at 38% 35%, #c044ff 0%, var(--red) 45%, var(--red-dark) 100%);
       box-shadow:
         0 0 0 6px rgba(255,255,255,0.08),
         0 0 40px var(--red-glow),
-        0 0 80px rgba(224,16,16,0.3),
+        0 0 80px rgba(139,16,224,0.3),
         inset 0 -6px 20px rgba(0,0,0,0.4),
-        inset 0 4px 12px rgba(255,180,180,0.25);
+        inset 0 4px 12px rgba(220,180,255,0.25);
       color: #fff;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 96px;
@@ -83,9 +83,9 @@
       box-shadow:
         0 0 0 6px rgba(255,255,255,0.12),
         0 0 60px var(--red-glow),
-        0 0 120px rgba(224,16,16,0.45),
+        0 0 120px rgba(139,16,224,0.45),
         inset 0 -6px 20px rgba(0,0,0,0.4),
-        inset 0 4px 12px rgba(255,180,180,0.25);
+        inset 0 4px 12px rgba(220,180,255,0.25);
     }
 
     #btn:active {
@@ -103,7 +103,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 3px solid rgba(224,16,16,0.7);
+      border: 3px solid rgba(139,16,224,0.7);
       opacity: 0;
       transform: scale(1);
       pointer-events: none;
@@ -122,24 +122,24 @@
         box-shadow:
           0 0 0 6px rgba(255,255,255,0.08),
           0 0 40px var(--red-glow),
-          0 0 80px rgba(224,16,16,0.3),
+          0 0 80px rgba(139,16,224,0.3),
           inset 0 -6px 20px rgba(0,0,0,0.4),
-          inset 0 4px 12px rgba(255,180,180,0.25);
+          inset 0 4px 12px rgba(220,180,255,0.25);
       }
       50% {
         box-shadow:
           0 0 0 6px rgba(255,255,255,0.08),
-          0 0 60px rgba(224,16,16,0.8),
-          0 0 120px rgba(224,16,16,0.4),
+          0 0 60px rgba(139,16,224,0.8),
+          0 0 120px rgba(139,16,224,0.4),
           inset 0 -6px 20px rgba(0,0,0,0.4),
-          inset 0 4px 12px rgba(255,180,180,0.25);
+          inset 0 4px 12px rgba(220,180,255,0.25);
       }
     }
 
     /* ── Now-playing label ── */
     #label {
       margin-top: 24px;
-      color: rgba(180, 20, 20, 0.75);
+      color: rgba(120, 20, 180, 0.75);
       font-style: italic;
       font-size: 18px;
       letter-spacing: 0.04em;
@@ -171,7 +171,7 @@
     // Name your files: audio/01.mp3, audio/02.mp3 ... audio/15.mp3
     // Change this array if you use different filenames
     const tracks = Array.from({ length: TOTAL }, (_, i) =>
-      `audio/${String(i + 1).padStart(2, '0')}.mp3`
+      `audio/${String(i + 1).padStart(2, '0')}.mpeg`
     );
 
     const btn    = document.getElementById('btn');
