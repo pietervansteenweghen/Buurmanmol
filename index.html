@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital@1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #e01010;
+      --red-dark: #9a0a0a;
+      --red-glow: rgba(224, 16, 16, 0.6);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: 'Crimson Pro', Georgia, serif;
+    }
+
+    /* ── Center stage ── */
+    #stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      z-index: 1;
+    }
+
+    /* ── Logo image ── */
+    #logo {
+      width: min(520px, 80vw);
+      height: auto;
+      display: block;
+      margin-bottom: 32px;
+      animation: floatIn 0.8s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── The Button ── */
+    #btn {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: radial-gradient(circle at 38% 35%, #ff4444 0%, var(--red) 45%, var(--red-dark) 100%);
+      box-shadow:
+        0 0 0 6px rgba(255,255,255,0.08),
+        0 0 40px var(--red-glow),
+        0 0 80px rgba(224,16,16,0.3),
+        inset 0 -6px 20px rgba(0,0,0,0.4),
+        inset 0 4px 12px rgba(255,180,180,0.25);
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 96px;
+      letter-spacing: -2px;
+      line-height: 1;
+      /* nudge ? optically center */
+      padding-bottom: 6px;
+      user-select: none;
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+      animation: pulse 3s ease-in-out infinite;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #btn:hover {
+      animation: none;
+      transform: scale(1.06);
+      box-shadow:
+        0 0 0 6px rgba(255,255,255,0.12),
+        0 0 60px var(--red-glow),
+        0 0 120px rgba(224,16,16,0.45),
+        inset 0 -6px 20px rgba(0,0,0,0.4),
+        inset 0 4px 12px rgba(255,180,180,0.25);
+    }
+
+    #btn:active {
+      animation: none;
+      transform: scale(0.94);
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.06),
+        0 0 20px var(--red-glow),
+        inset 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Ripple ring on click */
+    #btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(224,16,16,0.7);
+      opacity: 0;
+      transform: scale(1);
+      pointer-events: none;
+    }
+
+    #btn.ripple::after {
+      animation: ring 0.5s ease-out forwards;
+    }
+
+    @keyframes ring {
+      to { transform: scale(1.7); opacity: 0; }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 6px rgba(255,255,255,0.08),
+          0 0 40px var(--red-glow),
+          0 0 80px rgba(224,16,16,0.3),
+          inset 0 -6px 20px rgba(0,0,0,0.4),
+          inset 0 4px 12px rgba(255,180,180,0.25);
+      }
+      50% {
+        box-shadow:
+          0 0 0 6px rgba(255,255,255,0.08),
+          0 0 60px rgba(224,16,16,0.8),
+          0 0 120px rgba(224,16,16,0.4),
+          inset 0 -6px 20px rgba(0,0,0,0.4),
+          inset 0 4px 12px rgba(255,180,180,0.25);
+      }
+    }
+
+    /* ── Now-playing label ── */
+    #label {
+      margin-top: 24px;
+      color: rgba(180, 20, 20, 0.75);
+      font-style: italic;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      min-height: 28px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+    }
+
+    #label.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="stage">
+    <img id="logo" src="image.png" alt="Het Grote Buurman Mol Spel" />
+    <button id="btn">?</button>
+    <div id="label"></div>
+  </div>
+
+  <audio id="player" preload="none"></audio>
+
+  <script>
+    const TOTAL = 15;
+    // Name your files: audio/01.mp3, audio/02.mp3 ... audio/15.mp3
+    // Change this array if you use different filenames
+    const tracks = Array.from({ length: TOTAL }, (_, i) =>
+      `audio/${String(i + 1).padStart(2, '0')}.mp3`
+    );
+
+    const btn    = document.getElementById('btn');
+    const player = document.getElementById('player');
+    const label  = document.getElementById('label');
+
+    let lastIndex = -1;
+
+    btn.addEventListener('click', () => {
+      // Ripple animation
+      btn.classList.remove('ripple');
+      void btn.offsetWidth; // reflow
+      btn.classList.add('ripple');
+
+      // Pick a track — avoid repeating the same one twice in a row
+      let idx;
+      do { idx = Math.floor(Math.random() * TOTAL); } while (idx === lastIndex && TOTAL > 1);
+      lastIndex = idx;
+
+      const src = tracks[idx];
+      player.pause();
+      player.src = src;
+      player.currentTime = 0;
+      player.play().catch(() => {});
+
+      // Show playing indicator
+      label.textContent = '♪ playing...';
+      label.classList.add('show');
+    });
+
+    // Hide label when audio ends
+    player.addEventListener('ended', () => {
+      label.classList.remove('show');
+    });
+  </script>
+
+</body>
+</html>
