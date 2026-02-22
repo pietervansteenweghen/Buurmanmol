@@ -10,9 +10,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --red: #cc1a1a;
-      --red-dark: #7a0a0a;
-      --red-glow: rgba(204, 26, 26, 0.65);
+      --btn-red: #b31e13;
+      --btn-yellow: #fdf9b7;
     }
 
     html, body {
@@ -64,43 +63,27 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      background: radial-gradient(circle at 38% 35%, #ff4040 0%, var(--red) 45%, var(--red-dark) 100%);
-      box-shadow:
-        0 0 0 6px rgba(255,255,255,0.08),
-        0 0 40px var(--red-glow),
-        0 0 80px rgba(204,26,26,0.3),
-        inset 0 -6px 20px rgba(0,0,0,0.4),
-        inset 0 4px 12px rgba(255,180,180,0.25);
-      color: #CA2115;
+      background: var(--btn-red);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      color: var(--btn-yellow);
       font-family: 'Bebas Neue', sans-serif;
       font-size: 96px;
       letter-spacing: -2px;
       line-height: 1;
       padding-bottom: 6px;
       user-select: none;
-      transition: transform 0.1s ease, box-shadow 0.15s ease;
-      animation: pulse 3s ease-in-out infinite;
+      transition: transform 0.12s ease, box-shadow 0.15s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     #btn:hover {
-      animation: none;
       transform: scale(1.06);
-      box-shadow:
-        0 0 0 6px rgba(255,255,255,0.12),
-        0 0 60px var(--red-glow),
-        0 0 120px rgba(204,26,26,0.45),
-        inset 0 -6px 20px rgba(0,0,0,0.4),
-        inset 0 4px 12px rgba(255,180,180,0.25);
+      box-shadow: 0 0 0 8px rgba(253,249,183,0.35), 0 6px 20px rgba(0,0,0,0.2);
     }
 
     #btn:active {
-      animation: none;
       transform: scale(0.94);
-      box-shadow:
-        0 0 0 4px rgba(255,255,255,0.06),
-        0 0 20px var(--red-glow),
-        inset 0 6px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     /* Ripple ring on click */
@@ -109,7 +92,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 3px solid rgba(204,26,26,0.7);
+      border: 3px solid rgba(253,249,183,0.7);
       opacity: 0;
       transform: scale(1);
       pointer-events: none;
@@ -123,25 +106,6 @@
       to { transform: scale(1.7); opacity: 0; }
     }
 
-    @keyframes pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 0 6px rgba(255,255,255,0.08),
-          0 0 40px var(--red-glow),
-          0 0 80px rgba(204,26,26,0.3),
-          inset 0 -6px 20px rgba(0,0,0,0.4),
-          inset 0 4px 12px rgba(255,180,180,0.25);
-      }
-      50% {
-        box-shadow:
-          0 0 0 6px rgba(255,255,255,0.08),
-          0 0 60px rgba(204,26,26,0.85),
-          0 0 120px rgba(204,26,26,0.4),
-          inset 0 -6px 20px rgba(0,0,0,0.4),
-          inset 0 4px 12px rgba(255,180,180,0.25);
-      }
-    }
-
     /* ── Init (▶) button ── */
     #init-btn {
       position: relative;
@@ -150,40 +114,31 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      background: radial-gradient(circle at 38% 35%, #ff4040 0%, var(--red) 45%, var(--red-dark) 100%);
-      box-shadow:
-        0 0 0 4px rgba(255,255,255,0.08),
-        0 0 20px var(--red-glow),
-        0 0 40px rgba(204,26,26,0.2),
-        inset 0 -4px 12px rgba(0,0,0,0.4),
-        inset 0 3px 8px rgba(255,180,180,0.25);
-      color: rgba(255,255,255,0.92);
+      background: var(--btn-red);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      color: var(--btn-yellow);
       font-size: 30px;
       line-height: 1;
       padding-left: 4px; /* optical centering of ▶ */
       user-select: none;
-      transition: transform 0.1s ease, box-shadow 0.15s ease;
+      transition: transform 0.12s ease, box-shadow 0.15s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     #init-btn:hover {
       transform: scale(1.08);
-      box-shadow:
-        0 0 0 4px rgba(255,255,255,0.12),
-        0 0 30px var(--red-glow),
-        0 0 60px rgba(204,26,26,0.35),
-        inset 0 -4px 12px rgba(0,0,0,0.4),
-        inset 0 3px 8px rgba(255,180,180,0.25);
+      box-shadow: 0 0 0 6px rgba(253,249,183,0.35), 0 4px 16px rgba(0,0,0,0.2);
     }
 
     #init-btn:active {
       transform: scale(0.93);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     /* ── Now-playing label ── */
     #label {
       margin-top: 24px;
-      color: rgba(160, 20, 20, 0.75);
+      color: rgba(179, 30, 19, 0.75);
       font-style: italic;
       font-size: 18px;
       letter-spacing: 0.04em;
@@ -220,11 +175,11 @@
       pointer-events: all;
     }
 
-    /* Close button */
-    #char-close {
+    /* Close / reshuffle buttons */
+    #char-close,
+    #char-reshuffle {
       position: absolute;
       top: 20px;
-      right: 24px;
       background: none;
       border: none;
       cursor: pointer;
@@ -235,7 +190,11 @@
       transition: color 0.15s;
     }
 
-    #char-close:hover { color: rgba(0,0,0,0.65); }
+    #char-close    { right: 24px; }
+    #char-reshuffle { left: 24px; }
+
+    #char-close:hover,
+    #char-reshuffle:hover { color: rgba(0,0,0,0.65); }
 
     /* ── Character card ── */
     .char-card {
@@ -274,14 +233,14 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: radial-gradient(circle at 38% 35%, #ff4040 0%, #cc1a1a 55%, #7a0a0a 100%);
-      color: #fff8e0;
+      background: var(--btn-red);
+      color: var(--btn-yellow);
       font-family: 'Bebas Neue', sans-serif;
       font-size: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
     }
 
     .char-card .char-name {
@@ -321,7 +280,8 @@
 
   <!-- Character reveal overlay -->
   <div id="char-overlay">
-    <button id="char-close">&#x2715;</button>
+    <button id="char-reshuffle" title="Reshuffle">&#x21BA;</button>
+    <button id="char-close" title="Close">&#x2715;</button>
   </div>
 
   <audio id="player" preload="none"></audio>
@@ -376,20 +336,18 @@
       { file: 'audio/Zwaardvis_Op_Het_Droge.png',   name: 'Zwaardvis Op Het Droge',   tint: '#ddf3f8' },
     ];
 
-    const initBtn  = document.getElementById('init-btn');
-    const overlay  = document.getElementById('char-overlay');
-    const closeBtn = document.getElementById('char-close');
+    const initBtn      = document.getElementById('init-btn');
+    const overlay      = document.getElementById('char-overlay');
+    const closeBtn     = document.getElementById('char-close');
+    const reshuffleBtn = document.getElementById('char-reshuffle');
 
-    initBtn.addEventListener('click', () => {
+    function showCards() {
       // Pick 3 unique random characters
       const shuffled = [...characters].sort(() => Math.random() - 0.5);
       const selected = shuffled.slice(0, 3);
 
-      // Remove old cards (keep the close button)
+      // Remove old cards (keep the control buttons)
       overlay.querySelectorAll('.char-card').forEach(c => c.remove());
-
-      // Show overlay (white screen)
-      overlay.classList.add('active');
 
       // Slide cards in one by one
       selected.forEach((char, i) => {
@@ -407,6 +365,15 @@
           card.classList.add('slide-in');
         }, i * 600);
       });
+    }
+
+    initBtn.addEventListener('click', () => {
+      overlay.classList.add('active');
+      showCards();
+    });
+
+    reshuffleBtn.addEventListener('click', () => {
+      showCards();
     });
 
     closeBtn.addEventListener('click', () => {
