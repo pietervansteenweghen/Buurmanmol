@@ -49,7 +49,14 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── The Button ── */
+    /* ── Button group ── */
+    #btn-group {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    /* ── The ? Button ── */
     #btn {
       position: relative;
       width: 160px;
@@ -64,12 +71,11 @@
         0 0 80px rgba(139,16,224,0.3),
         inset 0 -6px 20px rgba(0,0,0,0.4),
         inset 0 4px 12px rgba(220,180,255,0.25);
-      color: #fff;
+      color: #CA2115;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 96px;
       letter-spacing: -2px;
       line-height: 1;
-      /* nudge ? optically center */
       padding-bottom: 6px;
       user-select: none;
       transition: transform 0.1s ease, box-shadow 0.15s ease;
@@ -136,6 +142,44 @@
       }
     }
 
+    /* ── Init (▶) button ── */
+    #init-btn {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: radial-gradient(circle at 38% 35%, #c044ff 0%, var(--red) 45%, var(--red-dark) 100%);
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.08),
+        0 0 20px var(--red-glow),
+        0 0 40px rgba(139,16,224,0.2),
+        inset 0 -4px 12px rgba(0,0,0,0.4),
+        inset 0 3px 8px rgba(220,180,255,0.25);
+      color: rgba(255,255,255,0.92);
+      font-size: 30px;
+      line-height: 1;
+      padding-left: 4px; /* optical centering of ▶ */
+      user-select: none;
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #init-btn:hover {
+      transform: scale(1.08);
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.12),
+        0 0 30px var(--red-glow),
+        0 0 60px rgba(139,16,224,0.35),
+        inset 0 -4px 12px rgba(0,0,0,0.4),
+        inset 0 3px 8px rgba(220,180,255,0.25);
+    }
+
+    #init-btn:active {
+      transform: scale(0.93);
+    }
+
     /* ── Now-playing label ── */
     #label {
       margin-top: 24px;
@@ -154,22 +198,118 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* ── Character reveal overlay ── */
+    #char-overlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 32px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #char-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Close button */
+    #char-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 30px;
+      color: rgba(0,0,0,0.3);
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.15s;
+    }
+
+    #char-close:hover { color: rgba(0,0,0,0.65); }
+
+    /* ── Character card ── */
+    .char-card {
+      width: 220px;
+      border-radius: 20px;
+      padding: 28px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.10);
+      opacity: 0;
+      transform: translateX(-110vw);
+    }
+
+    .char-card.slide-in {
+      animation: slideFromLeft 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    @keyframes slideFromLeft {
+      from { opacity: 1; transform: translateX(-110vw); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .char-card img {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+    }
+
+    .char-card .char-name {
+      margin-top: 16px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.06em;
+      text-align: center;
+      color: rgba(0,0,0,0.6);
+      line-height: 1.25;
+    }
+
+    /* Responsive: smaller cards on narrow screens */
+    @media (max-width: 720px) {
+      .char-card {
+        width: 150px;
+        padding: 20px 14px 14px;
+      }
+      .char-card img {
+        width: 110px;
+        height: 110px;
+      }
+      #char-overlay { gap: 16px; }
+    }
   </style>
 </head>
 <body>
 
   <div id="stage">
     <img id="logo" src="image.png" alt="Het Grote Buurman Mol Spel" />
-    <button id="btn">?</button>
+    <div id="btn-group">
+      <button id="btn">?</button>
+      <button id="init-btn">&#9654;</button>
+    </div>
     <div id="label"></div>
+  </div>
+
+  <!-- Character reveal overlay -->
+  <div id="char-overlay">
+    <button id="char-close">&#x2715;</button>
   </div>
 
   <audio id="player" preload="none"></audio>
 
   <script>
+    // ── Audio player ──
     const TOTAL = 15;
-    // Name your files: audio/01.mp3, audio/02.mp3 ... audio/15.mp3
-    // Change this array if you use different filenames
     const tracks = Array.from({ length: TOTAL }, (_, i) =>
       `audio/${String(i + 1).padStart(2, '0')}.mpeg`
     );
@@ -181,30 +321,76 @@
     let lastIndex = -1;
 
     btn.addEventListener('click', () => {
-      // Ripple animation
       btn.classList.remove('ripple');
-      void btn.offsetWidth; // reflow
+      void btn.offsetWidth;
       btn.classList.add('ripple');
 
-      // Pick a track — avoid repeating the same one twice in a row
       let idx;
       do { idx = Math.floor(Math.random() * TOTAL); } while (idx === lastIndex && TOTAL > 1);
       lastIndex = idx;
 
-      const src = tracks[idx];
       player.pause();
-      player.src = src;
+      player.src = tracks[idx];
       player.currentTime = 0;
       player.play().catch(() => {});
 
-      // Show playing indicator
       label.textContent = '♪ playing...';
       label.classList.add('show');
     });
 
-    // Hide label when audio ends
     player.addEventListener('ended', () => {
       label.classList.remove('show');
+    });
+
+    // ── Character reveal ──
+    const characters = [
+      { file: 'audio/Aardworm_De_Aardworm.png',    name: 'Aardworm De Aardworm',    tint: '#fde8e0' },
+      { file: 'audio/Achtergelaten_Hond.png',       name: 'Achtergelaten Hond',       tint: '#fdf5e4' },
+      { file: 'audio/Berebeer_.png',                name: 'Berebeer',                 tint: '#f5e8d5' },
+      { file: 'audio/Cliche_Zon_Met_Zonnebril.png', name: 'Cliche Zon Met Zonnebril', tint: '#fdfbe0' },
+      { file: 'audio/Fluitende_Vogel.png',          name: 'Fluitende Vogel',          tint: '#e8e8ed' },
+      { file: 'audio/Haantje_De_Voorste.png',       name: 'Haantje De Voorste',       tint: '#e0e8f5' },
+      { file: 'audio/Koe.png',                      name: 'Koe',                      tint: '#ebebeb' },
+      { file: 'audio/Mestkever_Martijn.png',        name: 'Mestkever Martijn',        tint: '#dce8f0' },
+      { file: 'audio/Sluwe_Vos_.png',               name: 'Sluwe Vos',                tint: '#fde8d0' },
+      { file: 'audio/Vogel.png',                    name: 'Vogel',                    tint: '#ede0d4' },
+      { file: 'audio/Zwaardvis_Op_Het_Droge.png',   name: 'Zwaardvis Op Het Droge',   tint: '#ddf3f8' },
+    ];
+
+    const initBtn  = document.getElementById('init-btn');
+    const overlay  = document.getElementById('char-overlay');
+    const closeBtn = document.getElementById('char-close');
+
+    initBtn.addEventListener('click', () => {
+      // Pick 3 unique random characters
+      const shuffled = [...characters].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 3);
+
+      // Remove old cards (keep the close button)
+      overlay.querySelectorAll('.char-card').forEach(c => c.remove());
+
+      // Show overlay (white screen)
+      overlay.classList.add('active');
+
+      // Slide cards in one by one
+      selected.forEach((char, i) => {
+        const card = document.createElement('div');
+        card.className = 'char-card';
+        card.style.background = char.tint;
+        card.innerHTML = `
+          <img src="${char.file}" alt="${char.name}" />
+          <div class="char-name">${char.name}</div>
+        `;
+        overlay.appendChild(card);
+
+        setTimeout(() => {
+          card.classList.add('slide-in');
+        }, i * 600);
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
     });
   </script>
 
