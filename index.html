@@ -194,14 +194,22 @@
     }
 
     #char-close    { right: 24px; }
-    #char-reshuffle { left: 24px; }
+    #char-reshuffle { left: 24px; font-size: 30px; }
 
     #char-close:hover,
     #char-reshuffle:hover { color: rgba(0,0,0,0.65); }
 
+    @keyframes spinOnce {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #char-reshuffle.spinning {
+      animation: spinOnce 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     /* ── Character card ── */
     .char-card {
-      position: relative;
       width: 220px;
       border-radius: 20px;
       padding: 28px 20px 18px;
@@ -228,25 +236,7 @@
       object-fit: contain;
     }
 
-    /* Number badge */
-    .char-number {
-      position: absolute;
-      top: -14px;
-      left: -14px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--btn-red);
-      color: var(--btn-yellow);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-    }
-
-    .char-card .char-name {
+.char-card .char-name {
       margin-top: 16px;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 19px;
@@ -358,7 +348,6 @@
         card.className = 'char-card';
         card.style.background = char.tint;
         card.innerHTML = `
-          <div class="char-number">${i + 1}</div>
           <img src="${char.file}" alt="${char.name}" />
           <div class="char-name">${char.name}</div>
         `;
@@ -376,6 +365,12 @@
     });
 
     reshuffleBtn.addEventListener('click', () => {
+      reshuffleBtn.classList.remove('spinning');
+      void reshuffleBtn.offsetWidth; // force reflow to restart animation
+      reshuffleBtn.classList.add('spinning');
+      reshuffleBtn.addEventListener('animationend', () => {
+        reshuffleBtn.classList.remove('spinning');
+      }, { once: true });
       showCards();
     });
 
